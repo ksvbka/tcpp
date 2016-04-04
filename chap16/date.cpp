@@ -12,134 +12,191 @@ Description : Implementation of date class with support comparig dates, incremen
 
 using namespace std;
 
-bool date::IsLeapYear(int _year)
-{
-    return (_year >= 0 && _year % 4 == 0 && _year % 100 != 0);
-}
-/* Helper function to compute day of month*/
-int date::DayOfMonth(_month)
-{
-    assert(_month >=0 && _month <= 12);
-    switch(_month)
+namespace kr{
+
+    int IsLeapYear(const int& year)
     {
-        case  1, 3, 5, 7,8,10, 12:
-            return 31;
-            break;
-        case 3, 6, 9, 11:
-            return 30;
-            break;
-        case 2:
-            return: 28 + IsLeapYear();
+        return (year >= 0 && year % 4 == 0 && year % 100 != 0);
     }
-}
 
-
-bool date::valid(void) const
-{
-    if(year < 0) return false;
-    if(month <=0 || month > 12) return false;
-    if(day <= 0 || day > DayOfMonth()) return false;
-
-    return true;
-}
-
-void date::set_day(const int& _day)
-{
-    assert(_day > 0 && _day <= DayOfMonth());
-    day = _day;
-}
-
-void date::set_month(const int& _month)
-{
-    assert(_month > 0 && _month <= 12);
-    month = _month;
-}
-
-void date::set_year(const int & _year)
-{
-    assert(_year > 0);
-    year = _year;
-}
-
-date date::operator ++()
-{
-    day = day + 1 > DayOfMonth(month) ? 1 : day + 1;
-    if(day == 1)
-        month = month + 1 > 12 ? 1 : month + 1;
-    if(day == 1 && month == 1)
-        year++;
-    return *this;
-}
-
-date date::operator ++(int)
-{
-    return (*this)++;
-}
-
-date date::operator --()
-{
-    if(day -1 > 0)
-        day--;
-    else
+    /* Helper function to compute day of month*/
+    int  DayOfMonth(const int& month, const int& year)
     {
-        if(month > 1) month --;
-        else
+        assert(month >=0 && month <= 12);
+        switch(month)
         {
-            year--;
-            day = 1;
-            month = 1;
+            case 1: case 3: case 5 : case 7 :case 8 :case 10 :case 12:
+                return 31;
+                break;
+            case 4: case 6: case 9 :case 11:
+                return 30;
+                break;
+            case 2:
+                return 28 + IsLeapYear(year);
         }
     }
-    return (*this);
-}
 
-date date::operator --(int)
-{
-    return (*this)--;
-}
-/* Comparison operator*/
-bool operator == (const date& date1, const date& date2)
-{
-    return(date1.date() == date2.date() &&      \
-           date1.month() == date2.month() &&    \
-           date1.year() == date2.year());
-}
-bool operator != (const date& date1, const date& date2)
-{
-    return !(date1 == date2);
-}
-bool operator < (const date& date1, const date& date2)
-{
-    if(date1 == date2)
-        return false;
-    if(date1.year() > date2.year())
-        return false;
-    if(date1.year() < date2.year())
-        return true;
-    if(date1.month() > date2.month())
-        return false;
-    if(date1.month() < date2.month())
-        return true;
-    if(date1.day() >= date2.day())
-        return false;
-    if(date1.day() < date2.day())
-        return true;
-}
-bool operator > (const date& date1, const date& date2)
-{
-    return (date1 != date2 && !(date1 < date2));
-}
 
-bool operator <= (const date&, const date&)
-{
-    return !(date1 > date2);
-}
-bool operator >= (const date&, const date&)
-{
-    return !(date1 < date2);
-}
-/* Output operator*/
-std::ostream& operator << (std::ostream& os, const date& d)
-{
-    os << day.day() << "/" << day.month() << "/" << day.year() << endl;
+    bool IsValidDay(const int& day, const int& month, const int& year)
+    {
+        if(year < 0)
+            return false;
+        if(month <=0 || month > 12)
+            return false;
+        if(day <= 0 || (day > DayOfMonth(month, year)))
+            return false;
+
+        return true;
+    }
+
+    /* Construction*/
+
+    date::date(const int &day, const int& month, const int& year)
+    {
+        if(IsValidDay(day,month,year))
+        {
+            day_ = day; month_ = month; year_ = year;
+        }
+        else
+        {
+            day_ = 1; month_ = 1; year_ = 0; // date::date();
+        }
+    }
+
+    date::date( long long longDay)
+    {
+        assert(longDay >= 0);
+        int day = static_cast<int>(longDay % 100);
+        longDay /= 100;
+        int month = static_cast<int>(longDay %100);
+        longDay /= 100;
+        int year = static_cast<int>(longDay);
+
+        if(IsValidDay(day,month,year))
+        {
+            day_ = day; month_ = month; year_ = year;
+        }
+        else
+        {
+            day_ = 1; month_ = 1; year_ = 1; // date::date();
+        }
+    }
+
+    date::date(const date& rhs)
+    {
+        day_   = rhs.day_;
+        month_ = rhs.month_;
+        year_  = rhs.year_;
+    }
+
+    void date::set_day(const int& day)
+    {
+        assert(day > 0 && (day <= DayOfMonth(month_, year_)));
+        day_ = day;
+    }
+
+    void date::set_month(const int& month)
+    {
+        assert(month > 0 && month <= 12);
+        month_ = month;
+    }
+
+    void date::set_year(const int & year)
+    {
+        assert(year > 0);
+        year_ = year;
+    }
+
+    date date::operator ++()
+    {
+        day_ = day_ + 1 > DayOfMonth(month_, year_) ? 1 : day_ + 1;
+        if(day_ == 1)
+            month_ = month_ + 1 > 12 ? 1 : month_ + 1;
+        if(day_ == 1 && month_ == 1)
+            year_++;
+        return (*this);
+    }
+
+    date date::operator ++(int)
+    {
+        return ++(*this);
+    }
+
+    date date::operator --()
+    {
+
+        if(day_ -1 > 0)
+            day_--;
+        else
+        {
+            if(month_ > 1)
+            {
+                month_--;
+                day_ = DayOfMonth(month_, year_);
+            }
+            else
+            {
+                year_--;
+                month_ = 12;
+                day_ = 31;
+            }
+        }
+        return (*this);
+    }
+
+    date date::operator --(int)
+    {
+        return --(*this);
+    }
+    /* Comparison operator*/
+    bool operator == (const date& date1, const date& date2)
+    {
+        return(date1.day() == date2.day() &&      \
+               date1.month() == date2.month() &&    \
+               date1.year() == date2.year());
+    }
+
+    bool operator != (const date& date1, const date& date2)
+    {
+        return !(date1 == date2);
+    }
+
+    bool operator < (const date& date1, const date& date2)
+    {
+        if(date1 == date2)
+            return false;
+        if(date1.year() > date2.year())
+            return false;
+        if(date1.year() < date2.year())
+            return true;
+        if(date1.month() > date2.month())
+            return false;
+        if(date1.month() < date2.month())
+            return true;
+        if(date1.day() >= date2.day())
+            return false;
+        if(date1.day() < date2.day())
+            return true;
+    }
+
+    bool operator > (const date& date1, const date& date2)
+    {
+        return (date1 != date2 && !(date1 < date2));
+    }
+
+    bool operator <= (const date& date1, const date& date2)
+    {
+        return !(date1 > date2);
+    }
+    bool operator >= (const date& date1, const date& date2)
+    {
+        return !(date1 < date2);
+    }
+
+    /* Output operator*/
+    std::ostream& operator << (std::ostream& os, const date& d)
+    {
+        os << d.day() << "/" << d.month() << "/" << d.year() << endl;
+    }
+
 }

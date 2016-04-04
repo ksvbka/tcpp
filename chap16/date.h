@@ -12,44 +12,54 @@ Description : Implementation of date class with support comparig dates, incremen
 
 #include <iostream>
 
-class date
-{
-protected:
-    int year;
-    int month;
-    int day;
-    // enum Month {Jan =1, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec  };
-public:
-    date(const int& d = 1, const int& m = 1, const int& y = 0) :
-        day(d), month(m), year(y) {};
+namespace kr{
 
-    int day() const     { return day;   };
-    int month() const   { return month; };
-    int year() const    { return year;  };
+    class date
+    {
+    private:
+        int year_;
+        int month_;
+        int day_;
+    public:
+        date(): day_(0), month_(0), year_(0) {};
 
-    bool valid(void) const;
+        date(const int& d , const int& m , const int& y);
 
-    void set_day(const int& day);
-    void set_month(const int& month);
-    void set_year(const int& year);
+        date( long long day);
 
-    date operator ++(); /* Prefix*/
-    date operator ++(int); /* Postfix*/
-    date operator --(); /* Prefix*/
-    date operator --(int); /* Postfix*/
+        date(const date& rhs);
 
-};
+        int day() const     { return day_;   };
+        int month() const   { return month_; };
+        int year() const    { return year_;  };
 
-/* Helper function*/
+        void set_day(const int& day_);
+        void set_month(const int& month_);
+        void set_year(const int& year_);
 
-bool operator == (const date& , const date&); /* Comparison operator*/
-bool operator != (const date& , const date&);
-bool operator < (const date&, const date&);
-bool operator > (const date&, const date&);
+        date operator ++(); /* Prefix*/
+        date operator ++(int); /* Postfix*/
+        date operator --(); /* Prefix*/
+        date operator --(int); /* Postfix*/
 
-bool operator <= (const date&, const date&);
-bool operator >= (const date&, const date&);
+    };
 
-std::ostream& operator << (std::ostream& os, const date& d); /* Output operator*/
+    /* Helper function */
+
+    int  IsLeapYear(const int& year);
+    int  DayOfMonth(const int& month, const int& year);
+    bool IsValidDay(const int& day, const int& month, const int& year);
+
+    bool operator == (const date& , const date&); /* Comparison operator*/
+    bool operator != (const date& , const date&);
+    bool operator <  (const date&, const date&);
+    bool operator >  (const date&, const date&);
+
+    bool operator <= (const date&, const date&);
+    bool operator >= (const date&, const date&);
+
+    std::ostream& operator << (std::ostream& os, const date& d); /* Output operator*/
+}
 
 #endif // __DATE_H__
+
