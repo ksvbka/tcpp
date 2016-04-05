@@ -14,6 +14,7 @@ using namespace std;
 
 namespace kr{
 
+    /* Helper function */
     int IsLeapYear(const int& year)
     {
         return (year >= 0 && year % 4 == 0 && year % 100 != 0);
@@ -36,6 +37,11 @@ namespace kr{
         }
     }
 
+    date defaultDay()
+    {
+        date zeroDay(1,1,0);
+        return zeroDay;
+    }
 
     bool IsValidDay(const int& day, const int& month, const int& year)
     {
@@ -50,35 +56,34 @@ namespace kr{
     }
 
     /* Construction*/
+    bool date::is_valid()
+    {
+        return IsValidDay(day_, month_, year_);
+    }
 
     date::date(const int &day, const int& month, const int& year)
+        : day_(day), month_(month), year_(year)
     {
-        if(IsValidDay(day,month,year))
+        if(!is_valid())
         {
-            day_ = day; month_ = month; year_ = year;
-        }
-        else
-        {
-            day_ = 1; month_ = 1; year_ = 0; // date::date();
+            day_    = defaultDay().day();
+            month_  = defaultDay().month();
+            year_   = defaultDay().year();
         }
     }
 
     date::date( long long longDay)
     {
         assert(longDay >= 0);
-        int day = static_cast<int>(longDay % 100);
+        day_ = static_cast<int>(longDay % 100);
         longDay /= 100;
-        int month = static_cast<int>(longDay %100);
+        month_ = static_cast<int>(longDay %100);
         longDay /= 100;
-        int year = static_cast<int>(longDay);
+        year_ = static_cast<int>(longDay);
 
-        if(IsValidDay(day,month,year))
+        if(is_valid())
         {
-            day_ = day; month_ = month; year_ = year;
-        }
-        else
-        {
-            day_ = 1; month_ = 1; year_ = 1; // date::date();
+            *this = defaultDay();
         }
     }
 

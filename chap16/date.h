@@ -16,10 +16,6 @@ namespace kr{
 
     class date
     {
-    private:
-        int year_;
-        int month_;
-        int day_;
     public:
         date(): day_(0), month_(0), year_(0) {};
 
@@ -41,6 +37,11 @@ namespace kr{
         date operator ++(int); /* Postfix*/
         date operator --(); /* Prefix*/
         date operator --(int); /* Postfix*/
+    private:
+        int year_;
+        int month_;
+        int day_;
+        bool is_valid();
 
     };
 
@@ -49,6 +50,7 @@ namespace kr{
     int  IsLeapYear(const int& year);
     int  DayOfMonth(const int& month, const int& year);
     bool IsValidDay(const int& day, const int& month, const int& year);
+    date defaultDay();
 
     bool operator == (const date& , const date&); /* Comparison operator*/
     bool operator != (const date& , const date&);
