@@ -4,19 +4,19 @@
 #include <vector>
 #include <iostream>
 
-class IntSet{
-    public:
-        IntSet() : element_() {};
-        IntSet(std::vector<int> init): element_(init) {};
-        ~IntSet() {};
+class IntSet {
+  public:
+    IntSet() : element_() {};
+    IntSet(std::vector<int> init): element_(init) {};
+    ~IntSet() {};
 
-        std::vector<int> element() const;
-        bool isMember(int i);
-        bool isEmpty();
-        void push_back(int i);
+    std::vector<int> element() const;
+    bool isMember(int i);
+    bool isEmpty();
+    void push_back(int i);
 
-    private:
-        std::vector<int> element_;
+  private:
+    std::vector<int> element_;
 };
 
 IntSet Uinon(IntSet a, IntSet b);
