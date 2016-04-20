@@ -8,7 +8,7 @@
 #include <algorithm> // To use swap() - until C_++11
 #include <utility> // To use swap() - since C++11
 
-// using namespace std;
+using namespace std;
 
 template <class T>
 class Matrix{
@@ -66,7 +66,7 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& rhs){
 // Move assignment
 template <class T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T>&& rhs){
-  std::cout << "Move assignment" << std::endl;
+  //std::cout << "Move assignment" << std::endl;
   swap(dim, rhs.dim);
   swap(elem, rhs.elem);
   return *this;
@@ -78,9 +78,15 @@ int main(int argc, char const *argv[])
   int size = 1000;
   int loop = 1000;
 
+  /*Ver1: use copy constructor: time ~0.015s*/
   Matrix<int> m1 = Matrix<int>(size,size);
   Matrix<int> m2 {m1};
   Matrix<int> m3 {m1};
+
+  /*Ver2: use move constructor: time ~0.004s*/
+  // Matrix<int> m1 = move(Matrix<int>(size,size));
+  // Matrix<int> m2 {move(m1)};
+  // Matrix<int> m3 {move(m2)};
 
   for(int i = 0; i < loop; i++)
   {
